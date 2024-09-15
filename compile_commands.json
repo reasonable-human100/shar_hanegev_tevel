@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/arm-none-eabi-gcc",
+      "-c",
+      "-I",
+      "src",
+      "-I",
+      "headers",
+      "-O3",
+      "-o",
+      "tevel_x86.out",
+      "src/main.c"
+    ],
+    "directory": "/home/fatman/etc/___important___/___tevel___/new_tevel",
+    "file": "/home/fatman/etc/___important___/___tevel___/new_tevel/src/main.c",
+    "output": "/home/fatman/etc/___important___/___tevel___/new_tevel/tevel.out"
+  }
+]
