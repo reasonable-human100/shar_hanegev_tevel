@@ -1,1 +1,4 @@
+this does not compile i need to fix the imports and make a Makefile
+its fine for now
+
 to compile install "arm-none-eabi-gcc-cs"
