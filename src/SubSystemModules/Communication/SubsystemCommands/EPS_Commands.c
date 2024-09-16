@@ -1,5 +1,7 @@
 #include "EPS_Commands.h"
 
+
+// set eps vars
 int CMD_UpdateThresholdVoltages(sat_packet_t *cmd){
   return 0;
 }
@@ -8,13 +10,13 @@ int CMD_GetThresholdVoltages(sat_packet_t *cmd){
   return 0;
 }
 
-int CMD_UpdateSmoothingFactor(sat_packet_t *cmd){
-  return 0;
-}
-
-int CMD_RestoreDefaultAlpha(sat_packet_t *cmd){
-  return 0;
-}
+//int CMD_UpdateSmoothingFactor(sat_packet_t *cmd){
+//  return 0;
+//}
+//
+//int CMD_RestoreDefaultAlpha(sat_packet_t *cmd){
+//  return 0;
+//}
 
 int CMD_RestoreDefaultThresholdVoltages(sat_packet_t *cmd){
   return 0;
@@ -22,6 +24,15 @@ int CMD_RestoreDefaultThresholdVoltages(sat_packet_t *cmd){
 
 int CMD_GetSmoothingFactor(sat_packet_t *cmd){
   return 0;
+}
+
+// config
+int CMD_ResetConfig(sat_packet_t *cmd){
+    return EPS_reset_settings();
+}
+
+int CMD_SaveConfig(sat_packet_t *cmd){
+    return EPS_save_settings();
 }
 
 // eps modes
@@ -45,15 +56,7 @@ int CMD_GetCurrentMode(sat_packet_t *cmd){
     return GetSystemState();
 }
 
-
-int CMD_EPS_NOP(sat_packet_t *cmd){
-  return 0;
-}
-
-int CMD_EPS_ResetWDT(sat_packet_t *cmd){
-  return 0;
-}
-
+// power
 int CMD_EPS_SetChannels(sat_packet_t *cmd){
   return 0;
 }
@@ -72,30 +75,6 @@ int CMD_SetChannels5V_On(sat_packet_t *cmd){
 
 int CMD_SetChannels5V_Off(sat_packet_t *cmd){
     return GomEpsSetSingleOutput(gom_i2c_address, gomeps_channel_5, gomeps_channel_off, 0);
-}
-
-int CMD_GetEpsParemeter(sat_packet_t *cmd){
-  return 0;
-}
-
-int CMD_SetEpsParemeter(sat_packet_t *cmd){
-  return 0;
-}
-
-int CMD_ResetParameter(sat_packet_t *cmd){
-  return 0;
-}
-
-int CMD_ResetConfig(sat_packet_t *cmd){
-  return 0;
-}
-
-int CMD_LoadConfig(sat_packet_t *cmd){
-  return 0;
-}
-
-int CMD_SaveConfig(sat_packet_t *cmd){
-  return 0;
 }
 
 // solar panel

@@ -29,10 +29,6 @@ int CMD_EnterSafeMode(sat_packet_t *cmd);
 
 int CMD_GetCurrentMode(sat_packet_t *cmd);
 
-int CMD_EPS_NOP(sat_packet_t *cmd);
-
-int CMD_EPS_ResetWDT(sat_packet_t *cmd);
-
 int CMD_EPS_SetChannels(sat_packet_t *cmd);
 
 int CMD_SetChannels3V3_On(sat_packet_t *cmd);
@@ -43,19 +39,10 @@ int CMD_SetChannels5V_On(sat_packet_t *cmd);
 
 int CMD_SetChannels5V_Off(sat_packet_t *cmd);
 
-int CMD_GetEpsParemeter(sat_packet_t *cmd);
-
-int CMD_SetEpsParemeter(sat_packet_t *cmd);
-
-int CMD_ResetParameter(sat_packet_t *cmd);
-
 int CMD_ResetConfig(sat_packet_t *cmd);
-
-int CMD_LoadConfig(sat_packet_t *cmd);
 
 int CMD_SaveConfig(sat_packet_t *cmd);
 
-// solar panel
 void CMD_SolarPanelWake(sat_packet_t *cmd);
 
 void CMD_SolarPanelSleep(sat_packet_t *cmd);

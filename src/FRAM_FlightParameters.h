@@ -75,11 +75,22 @@
 #define TRANS_ABORT_FLAG_ADDR			0x500		//<! transmission abort request flag
 #define TRANS_ABORT_FLAG_SIZE			1			//<! size of mute flag in bytes
 
-#define EPS_THRESH_VOLTAGES_ADDR		0x666		//<! starting address for eps threshold voltages array
-#define EPS_THRESH_VOLTAGES_SIZE (NUMBER_OF_THRESHOLD_VOLTAGES * sizeof(voltage_t)) //<! number of bytes in eps threshold voltages array
+// eps
+#define EPS_FULL_MODE_DOWN_TEND_ADDR    0x501  // float 
+#define EPS_FULL_MODE_UP_TEND_ADDR      0x505  // float 
 
-#define EPS_ALPHA_FILTER_VALUE_ADDR 0x550			//<! filtering value in the LPF formula
-#define EPS_ALPHA_FILTER_VALUE_SIZE sizeof(float)	//<! size of double (alpha)
+#define EPS_CRUISE_MODE_DOWN_TEND_ADDR  0x509  // float 
+#define EPS_CRUISE_MODE_UP_TEND_ADDR    0x513  // float 
+
+#define EPS_SAFE_MODE_DOWN_TEND_ADDR    0x517  // float 
+#define EPS_SAFE_MODE_UP_TEND_ADDR      0x521  // float 
+
+#define EPS_CRITICAL_MODE_UP_TEND_ADDR   0x525 // float 
+#define EPS_CRITICAL_MODE_DOWN_TEND_ADDR 0x529 // float 
+
+
+#define EPS_ALPHA_FILTER_VALUE_ADDR     0x533	 // float filtering value in the LPF formula
+///
 
 #define BEACON_INTERVAL_TIME_ADDR 		0x4590		//<! address of value of the delay between 2 beacons
 #define BEACON_INTERVAL_TIME_SIZE 		4			//<! size of parameter in bytes
