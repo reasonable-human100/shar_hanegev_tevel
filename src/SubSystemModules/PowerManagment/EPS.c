@@ -1,11 +1,4 @@
 #include "EPS.h"
-#include <satellite-subsystems/GomEPS.h>
-#include "utils.h"
-
-voltage_t last_voltage;
-int voltage_tend;
-
-
 
 ////////////////////////////////////
 /// I NEED TO ADD ERROR CHECKING ///
@@ -23,28 +16,32 @@ int EPS_Init(void){
     FRAM_read((unsigned char*) &eps_mode_volts.safe_mode_up_tend, EPS_SAFE_MODE_UP_TEND_ADDR, 4);
     FRAM_read((unsigned char*) &eps_mode_volts.safe_mode_down_tend, EPS_SAFE_MODE_DOWN_TEND_ADDR, 4);
     
-    FRAM_read((unsigned char*) &eps_mode_volts.critical_mode_up_tend, EPS_CRITICAL_MODE_UP_TEND_ADDR, 4);
-    FRAM_read((unsigned char*) &eps_mode_volts.cruise_mode_down_tend,   EPS_CRUISE_MODE_DOWN_TEND_ADDR, 4);
 
     // set alpha value
     FRAM_read((unsigned char*) &alpha_value, EPS_ALPHA_FILTER_VALUE_ADDR, 4);
 
 
-    // gom 
-    int err;
-
-	err = GomEpsInitialize(&gom_i2c_address, 1);
-	if(err != E_NO_SS_ERR && err != E_IS_INITIALIZED)
-	{
-		logError(err,"GomEpsInitialize() failed");
-		return -1;
-	}
+    int rc = IMEPSV2_PIU_Init(&imeps_i2c_addr, 1);
+    if(rc == 0){
+    }
+    else{
+        logError(rc, "IMEPSV2_PIU_Init() failed");
+        return 1;
+    }
 
 	return 0;
 }
 
-int EPS_Conditioning()
-{
+// https://en.wikipedia.org/wiki/Exponential_smoothing
+
+// if this is the first time the alpha func is being ran
+Boolean first_alpha_run;
+#define ALPHA_SENSOR_SAMPLING_RATE 30 // the time per sec the payload sensor is ran
+
+
+int EPS_Conditioning(){
+
+
 	//int ret=0;
 	//voltage_t t;
 	//voltage_tend = getFilteredVolt(t);
@@ -126,8 +123,6 @@ int EPS_save_settings(){
     FRAM_write((unsigned char*) &eps_mode_volts.safe_mode_up_tend, EPS_SAFE_MODE_UP_TEND_ADDR, 4);
     FRAM_write((unsigned char*) &eps_mode_volts.safe_mode_down_tend, EPS_SAFE_MODE_DOWN_TEND_ADDR, 4);
     
-    FRAM_write((unsigned char*) &eps_mode_volts.critical_mode_up_tend, EPS_CRITICAL_MODE_UP_TEND_ADDR, 4);
-    FRAM_write((unsigned char*) &eps_mode_volts.cruise_mode_down_tend,   EPS_CRUISE_MODE_DOWN_TEND_ADDR, 4);
 
     // set alpha value
     FRAM_write((unsigned char*) &alpha_value, EPS_ALPHA_FILTER_VALUE_ADDR, 4);
@@ -143,13 +138,10 @@ int EPS_reset_settings(){
     eps_mode_volts.full_mode_down_tend = DEFFAULT_FULL_MODE_DOWN_TEND;
 
     eps_mode_volts.cruise_mode_up_tend = DEFFAULT_CRUISE_MODE_UP_TEND;
-    eps_mode_volts.cruise_mode_down_tend = DEFFAULT_CRUISE_MODE_DOWN_TEND;
+
 
     eps_mode_volts.safe_mode_up_tend = DEFFAULT_SAFE_MODE_UP_TEND;
     eps_mode_volts.safe_mode_down_tend = DEFFAULT_SAFE_MODE_DOWN_TEND;
-
-    eps_mode_volts.critical_mode_up_tend = DEFFAULT_CIRTICAL_MODE_UP_TEND;
-    eps_mode_volts.cruise_mode_down_tend = DEFFAULT_CIRTICAL_MODE_DOWN_TEND;
 
     alpha_value = DEFAULT_ALPHA_VALUE;
 
@@ -167,8 +159,6 @@ int RestoreDefaultThresholdVoltages(){
     eps_mode_volts.safe_mode_up_tend = DEFFAULT_SAFE_MODE_UP_TEND;
     eps_mode_volts.safe_mode_down_tend = DEFFAULT_SAFE_MODE_DOWN_TEND;
 
-    eps_mode_volts.critical_mode_up_tend = DEFFAULT_CIRTICAL_MODE_UP_TEND;
-    eps_mode_volts.cruise_mode_down_tend = DEFFAULT_CIRTICAL_MODE_DOWN_TEND;
 
     return 0;
 }
@@ -179,23 +169,22 @@ int RestoreDefaultAlpha(){
     return 0;
 }
 
-
-short GetBatteryVoltage(voltage_t *vbat)
+voltage_t GetBatteryVoltage()
 {
-	gom_eps_hk_t response;
-	int err = (GomEpsGetHkData_general(0,&response));
-    if(err != E_NO_SS_ERR && err != E_IS_INITIALIZED){
-	    logError(err, "failed to get battery voltage");
-        return err;
-    }
+    // i dont know how to do this with imeps
+	//gom_eps_hk_t response;
+	//int err = (GomEpsGetHkData_general(0,&response));
+    //if(err != E_NO_SS_ERR && err != E_IS_INITIALIZED){
+	//    logError(err, "failed to get battery voltage");
+    //    return -1;
+    //}
 
-	*vbat = response.fields.vbatt;
-    return *vbat;
+	//return response.fields.vbatt;
 }
 
 
 
 // i dont know what these are
-int CMDGetHeaterValues(sat_packet_t *cmd);
-
-int CMDSetHeaterValues(sat_packet_t *cmd);
+//int CMDGetHeaterValues(sat_packet_t *cmd);
+//
+//int CMDSetHeaterValues(sat_packet_t *cmd);

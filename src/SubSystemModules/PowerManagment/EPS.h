@@ -7,9 +7,13 @@
 #ifndef EPS_H_
 #define EPS_H_
 
+// #include <satellite-subsystems/GomEPS.h>
+
+#include "satellite-subsystems/imepsv2_piu.h"
+#include "satellite-subsystems/imepsv2_piu_types.h"
+#include "utils.h"
 #include "GlobalStandards.h"
 #include "hal/Storage/FRAM.h"
-#include <satellite-subsystems/GomEPS.h>
 #include "EPSOperationModes.h"
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 #include <stdint.h>
@@ -29,44 +33,39 @@
  	 	 	 |	SAFE MODE	|
  	 	 	 |- - - - - - -	| 	-> SAFE UP = 6600
  	 	 	 |- - - - - - - |	-> SAFE DOWN = 6500
- 	 	 	 |				|
- 	 	 	 |	CRITICAL	|
  	 	 	 |______________|
  */
-
-unsigned char gom_i2c_address = 0x02;
-
 
 //#define NUMBER_OF_SOLAR_PANELS	    6
 //#define NUMBER_OF_THRESHOLD_VOLTAGES 	6 
 
 #define DEFAULT_ALPHA_VALUE 0.3
 
-#define DEFFAULT_FULL_MODE_DOWN_TEND 7.3
-#define DEFFAULT_FULL_MODE_UP_TEND 7.4
+// in Mv
+#define DEFFAULT_FULL_MODE_DOWN_TEND 7300
+#define DEFFAULT_FULL_MODE_UP_TEND 7400
 
-#define DEFFAULT_CRUISE_MODE_DOWN_TEND 7.1
-#define DEFFAULT_CRUISE_MODE_UP_TEND 7.2
+#define DEFFAULT_CRUISE_MODE_DOWN_TEND 7100
+#define DEFFAULT_CRUISE_MODE_UP_TEND 7200
 
-#define DEFFAULT_SAFE_MODE_DOWN_TEND 6.5
-#define DEFFAULT_SAFE_MODE_UP_TEND 6.6
+#define DEFFAULT_SAFE_MODE_DOWN_TEND 6500
+#define DEFFAULT_SAFE_MODE_UP_TEND 6600
 
-#define DEFFAULT_CIRTICAL_MODE_DOWN_TEND 5.5
-#define DEFFAULT_CIRTICAL_MODE_UP_TEND 5.6
+#define DEFFAULT_CIRTICAL_MODE_DOWN_TEND 5500
+
+IMEPSV2_PIU_t imeps_i2c_addr = {IMEPS_I2C_ADDR};
 
 // set to the saved values in fram see eps.c
 struct eps_mode_volts_t {
-    float full_mode_down_tend;
-    float full_mode_up_tend;
+    voltage_t full_mode_down_tend;
+    voltage_t full_mode_up_tend;
 
-    float cruise_mode_down_tend;
-    float cruise_mode_up_tend;
+    voltage_t cruise_mode_down_tend;
+    voltage_t cruise_mode_up_tend;
 
-    float safe_mode_down_tend;
-    float safe_mode_up_tend;
+    voltage_t safe_mode_down_tend;
+    voltage_t safe_mode_up_tend;
 
-    float critical_mode_up_tend;
-    float critical_mode_down_tend;
 }eps_mode_volts;
 
 float alpha_value; // also set from fram in eps.c
@@ -102,7 +101,7 @@ int EPS_save_settings();
 // resets alpha and eps_mode_volts to the default values
 int EPS_reset_settings();
 
-short GetBatteryVoltage(voltage_t *vbat);
+short GetBatteryVoltage();
 
 /*!
  * @brief setting the new EPS logic threshold voltages on the FRAM.
@@ -159,9 +158,11 @@ int RestoreDefaultAlpha();
  */
 int RestoreDefaultThresholdVoltages();
 
-int CMDGetHeaterValues(sat_packet_t *cmd);
 
-int CMDSetHeaterValues(sat_packet_t *cmd);
+
+//int CMDGetHeaterValues(sat_packet_t *cmd);
+//
+//int CMDSetHeaterValues(sat_packet_t *cmd);
 
 
 #endif

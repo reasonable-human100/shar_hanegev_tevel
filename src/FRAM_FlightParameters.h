@@ -85,10 +85,6 @@
 #define EPS_SAFE_MODE_DOWN_TEND_ADDR    0x517  // float 
 #define EPS_SAFE_MODE_UP_TEND_ADDR      0x521  // float 
 
-#define EPS_CRITICAL_MODE_UP_TEND_ADDR   0x525 // float 
-#define EPS_CRITICAL_MODE_DOWN_TEND_ADDR 0x529 // float 
-
-
 #define EPS_ALPHA_FILTER_VALUE_ADDR     0x533	 // float filtering value in the LPF formula
 ///
 

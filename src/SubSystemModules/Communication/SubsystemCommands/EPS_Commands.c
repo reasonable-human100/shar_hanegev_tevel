@@ -2,12 +2,12 @@
 
 
 // set eps vars
-int CMD_UpdateThresholdVoltages(sat_packet_t *cmd){
-  return 0;
+int CMD_UpdateThresholdVoltages(struct eps_mode_volts_t new_volts){
+  return UpdateThresholdVoltages(new_volts);
 }
 
-int CMD_GetThresholdVoltages(sat_packet_t *cmd){
-  return 0;
+struct eps_mode_volts_t CMD_GetThresholdVoltages(sat_packet_t *cmd){
+  return GetThresholdVoltages();
 }
 
 //int CMD_UpdateSmoothingFactor(sat_packet_t *cmd){
@@ -19,12 +19,12 @@ int CMD_GetThresholdVoltages(sat_packet_t *cmd){
 //}
 
 int CMD_RestoreDefaultThresholdVoltages(sat_packet_t *cmd){
-  return 0;
+    return RestoreDefaultThresholdVoltages();
 }
 
-int CMD_GetSmoothingFactor(sat_packet_t *cmd){
-  return 0;
-}
+//int CMD_GetSmoothingFactor(sat_packet_t *cmd){
+//    return 0;
+//}
 
 // config
 int CMD_ResetConfig(sat_packet_t *cmd){
@@ -57,9 +57,9 @@ int CMD_GetCurrentMode(sat_packet_t *cmd){
 }
 
 // power
-int CMD_EPS_SetChannels(sat_packet_t *cmd){
-  return 0;
-}
+//int CMD_EPS_SetChannels(sat_packet_t *cmd){
+//  return 0;
+//}
 
 int CMD_SetChannels3V3_On(sat_packet_t *cmd){
     return GomEpsSetSingleOutput(gom_i2c_address, gomeps_channel_3, gomeps_channel_on, 0);

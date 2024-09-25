@@ -21,7 +21,6 @@
 // 1 = FullMode
 // 2 = CruiseMode
 // 3 = SafeMode
-// 4 = CriticalMode
 int EpsState;
 
 /*!
@@ -46,13 +45,6 @@ int EnterCruiseMode();
 int EnterSafeMode();
 
 /*!
- * @brief Executes the necessary procedure in order to initiate the system into Critical mode
- * @return	0 on success
- * 			errors according to <hal/errors.h>
- */
-int EnterCriticalMode();
-
-/*!
  * @brief Sets the channel state according to the bitwise 'logic on'
  * if the 2'nd bit is '1' the second channel will turn on (channel = 0b01000000)
  * @note please use the defines defined in this header to turn on/off channels
@@ -70,11 +62,11 @@ int GetSystemState();
  * Gets the current system channel state
  * @return current system channel state
  */
-channel_t GetSystemChannelState();
-
-Boolean EpsGetLowVoltageFlag();
-
-void EpsSetLowVoltageFlag(Boolean low_volt_flag);
+//channel_t GetSystemChannelState();
+//
+//Boolean EpsGetLowVoltageFlag();
+//
+//void EpsSetLowVoltageFlag(Boolean low_volt_flag);
 
 
 #endif /* EPSOPERATIONMODES_H_ */

@@ -1,4 +1,5 @@
 #include "EPSOperationModes.h"
+#include "SubSystemModules/Housekepping/payload.h"
 #include "SubSystemModules/Communication/TRXVU.h"
 
 /*!
@@ -7,9 +8,9 @@
  * 			errors according to <hal/errors.h>
  */
 int EnterFullMode(){
+    is_transmition_allowed = 1;
+    payload_state = 1;
 
-    UnMuteTRXVU(); // unmute TRXVU if its muted
-	
     EpsState = 1;
     return 0;
 }
@@ -20,7 +21,8 @@ int EnterFullMode(){
  * 			errors according to <hal/errors.h>
  */
 int EnterCruiseMode(){
-    muteTRXVU(600); // mute for 10 min
+    is_transmition_allowed = 1;
+    payload_state = 0;
 
     EpsState = 2;
 	return 0;
@@ -32,32 +34,13 @@ int EnterCruiseMode(){
  * 			errors according to <hal/errors.h>
  */
 int EnterSafeMode(){
-    muteTRXVU(600); // mute for 10 min
-	
-    EpsState = 3;
-    return 0;
-}
+    is_transmition_allowed = 0;
+    payload_state = 0;
 
-/*!
- * @brief Executes the necessary procedure in order to initiate the system into Critical mode
- * @return	0 on success
- * 			errors according to <hal/errors.h>
- */
-int EnterCriticalMode(){
-    muteTRXVU(600); // mute for 10 min
-	
-    EpsState = 4;
+    EpsState = 3;
     return 0;
 }
 
 int GetSystemState(){
     return EpsState;
 }
-
-int SetEPS_Channels(channel_t channel);
-
-channel_t GetSystemChannelState();
-
-Boolean EpsGetLowVoltageFlag();
-
-void EpsSetLowVoltageFlag(Boolean low_volt_flag);

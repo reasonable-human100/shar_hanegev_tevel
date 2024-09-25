@@ -57,4 +57,5 @@ typedef short temp_t;				///< in Celsius
 typedef unsigned char channel_t;	///< each bit represents a specific system state. 1 = ON; 0 = OFF
 
 
+#define IMEPS_I2C_ADDR 0x2
 #endif /* GLOBALSTANDARDS_H_ */

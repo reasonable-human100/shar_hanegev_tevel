@@ -7,9 +7,9 @@
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 
-int CMD_UpdateThresholdVoltages(sat_packet_t *cmd);
+int CMD_UpdateThresholdVoltages(struct eps_mode_volts_t new_volts);
 
-int CMD_GetThresholdVoltages(sat_packet_t *cmd);
+struct eps_mode_volts_t CMD_GetThresholdVoltages(sat_packet_t *cmd);
 
 int CMD_UpdateSmoothingFactor(sat_packet_t *cmd);
 
