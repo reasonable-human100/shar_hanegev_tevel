@@ -1,3 +1,4 @@
+#include "GlobalStandards.h"
 #define SOREQ-I2C_ADDRESS 0x55
 #define READ_PIC32_RESET 0x66
 #define READ_DELAY 200
@@ -5,13 +6,20 @@
 #define READ_PIC32_RESETS 0x66
 #define PAYLOAD_I2C_ADDRESS
 #define CLEAR_WDT_AND_ALLOW_READ 0x45
+
 typedef enum {
 	PAYLOAD_SUCCESS, PAYLOAD_I2C_WRITE_Error, PAYLOAD_I2C_READ_Error, PAYLOAD_TIMEOUT
 }SoreqResult;
-typedef enum
-{
+
+typedef enum{
 	board, radfet,ormad,fpga
 }PayloadSubSystem;
+
+// checks payload_state
+// if true the playload is on 
+// if false the payload is off
+Boolean is_payload_off();
+Boolean payload_state = 1;
 
 SoreqResult payloadSendCommand(char opcode,int size,unsigned char* buffer,int delay);
 SoreqResult payloadRead(int size, unsigned char* buffer);
