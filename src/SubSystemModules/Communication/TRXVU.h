@@ -40,6 +40,17 @@ typedef enum __attribute__ ((__packed__)) _ISIStrxvuTransponderMode
 } ISIStrxvutransponderMode;
 
 
+
+/*!
+ * checks is_transmition_allowed
+ * @brief checks if transmission is possible on grounds of low voltage and TX mute
+ * @return	TRUE if transmission is allowed
+ * 			FALSE if transmission is denied
+ */
+Boolean CheckTransmitionAllowed();
+Boolean is_transmition_allowed = 1;
+
+
 void setMuteEndTime(time_unix endTime);
 
 time_unix getMuteEndTime();
@@ -93,13 +104,6 @@ int SetRSSITransponder(short rssiValue);
 int turnOnTransponder();
 
 Boolean CheckDumpAbort();
-
-/*!
- * @brief checks if transmission is possible on grounds of low voltage and TX mute
- * @return	TRUE if transmission is allowed
- * 			FALSE if transmission is denied
- */
-Boolean CheckTransmitionAllowed();
 
 /*!
  * @brief 	Transmits a packet according to the SPL protocol

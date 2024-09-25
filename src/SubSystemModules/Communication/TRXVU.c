@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <satellite-subsystems/IsisTRXUV.h>
 #include <satellite-subsystems/IsisAntS.h>
 #include <hal/errors.h>
@@ -13,15 +14,25 @@
 #include "AckHandler.h"
 #include <string.h>
 
+Boolean CheckTransmitionAllowed(){
+    if(is_transmition_allowed == 1){
+        return 1;
+    }
+
+    else{
+        return 0;
+    }
+}
+
 time_unix prev_time;
 int InitTrxvu()
 {
 	ISIStrxvuI2CAddress TRXVUAddress;
 	ISIStrxvuFrameLengths TRXVUBuffer;
 	ISIStrxvuBitrate TRXVUBitrate;
-  int rv;
+    int rv;
 
-  TRXVUAddress.addressVu_rc = I2C_TRXVU_RC_ADDR;
+    TRXVUAddress.addressVu_rc = I2C_TRXVU_RC_ADDR;
 	TRXVUAddress.addressVu_tc = I2C_TRXVU_TC_ADDR;
 
 	TRXVUBuffer.maxAX25frameLengthTX = SIZE_TXFRAME;
@@ -49,26 +60,40 @@ int InitTrxvu()
 }
 
 int TransmitSplPacket(sat_packet_t *packet, unsigned char *avalFrames){
-	//the total size of the packet is 8 + the length of the SPL data
-	unsigned char length = 8 + packet->length;
-	int err = IsisTrxvu_tcSendAX25DefClSign(ISIS_TRXVU_I2C_BUS_INDEX, (unsigned char*)packet, length, avalFrames);
-	logError(err, "failed to initilze trxvu, IsisTrxvu_initialize returned error");
-	return err;
+    Boolean rc = CheckTransmitionAllowed();
+    if(rc == 1){
+	    //the total size of the packet is 8 + the length of the SPL data
+	    unsigned char length = 8 + packet->length;
+	    int err = IsisTrxvu_tcSendAX25DefClSign(ISIS_TRXVU_I2C_BUS_INDEX, (unsigned char*)packet, length, avalFrames);
+	    logError(err, "failed to initilze trxvu, IsisTrxvu_initialize returned error");
+	    return err;
+    }
+
+    else{
+        return 0;
+    }
 }
 
 int BeaconLogic(Boolean forceTX){
-	time_unix beacon_interval = 10;
+    Boolean rc = CheckTransmitionAllowed();
+    if(rc == 1){
+	    time_unix beacon_interval = 10;
 
-	if( CheckExecutionTime( prev_time, beacon_interval)){
-		printf("sending beacon %u\n\r", prev_time);
-		WOD_Telemetry_t wod;
-		GetCurrentWODTelemetry(&wod);
-		sat_packet_t cmd;
-		AssembleCommand( &wod,  sizeof(WOD_Telemetry_t),  0,  0, 0, &cmd);
-		TransmitSplPacket( &cmd, NULL);
-		Time_getUnixEpoch(&prev_time);
-	}
-	return 0;
+	    if( CheckExecutionTime( prev_time, beacon_interval)){
+	    	printf("sending beacon %u\n\r", prev_time);
+	    	WOD_Telemetry_t wod;
+	    	GetCurrentWODTelemetry(&wod);
+	    	sat_packet_t cmd;
+	    	AssembleCommand( &wod,  sizeof(WOD_Telemetry_t),  0,  0, 0, &cmd);
+	    	TransmitSplPacket( &cmd, NULL);
+	    	Time_getUnixEpoch(&prev_time);
+	    }
+	    return 0;
+    }
+
+    else{
+        return 0;
+    }
 }
 
 
@@ -81,7 +106,7 @@ int GetOnlineCommand(sat_packet_t *cmd){
 		return err;
 	}
 
-  return ParseDataToCommand(buffer, cmd);
+    return ParseDataToCommand(buffer, cmd);
 }
 
 ISIStrxvuIdleState idle_state = trxvu_idle_state_off;
@@ -89,23 +114,30 @@ time_t last_idle_time;
 time_t idle_duration;
 
 int TRX_Logic(){
-	if (idle_state != trxvu_idle_state_off && CheckExecutionTime(last_idle_time, idle_duration)){
-		IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
-		idle_state = trxvu_idle_state_off;
-	}
+    Boolean rc = CheckTransmitionAllowed();
+    if(rc == 1){
+	    if (idle_state != trxvu_idle_state_off && CheckExecutionTime(last_idle_time, idle_duration)){
+	    	IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
+	    	idle_state = trxvu_idle_state_off;
+	    }
 
-	int frame_count = GetNumberOfFramesInBuffer();
-	if (frame_count > 0) {
-		sat_packet_t cmd;
-		int err = GetOnlineCommand(&cmd);
-		if (logError(err, "Error in trx logic, could not get command") != E_NO_SS_ERR){
-			return err;
-		}
-		SendAckPacket(ACK_RECEIVE_COMM, &cmd, NULL, 0);
-		ActUponCommand(&cmd);
-	}
-	 BeaconLogic(FALSE);
-	return 0;
+	    int frame_count = GetNumberOfFramesInBuffer();
+	    if (frame_count > 0) {
+	    	sat_packet_t cmd;
+	    	int err = GetOnlineCommand(&cmd);
+	    	if (logError(err, "Error in trx logic, could not get command") != E_NO_SS_ERR){
+	    		return err;
+	    	}
+	    	SendAckPacket(ACK_RECEIVE_COMM, &cmd, NULL, 0);
+	    	ActUponCommand(&cmd);
+	    }
+	     BeaconLogic(FALSE);
+	    return 0;
+    }
+
+    else{
+        return 0;
+    }
 }
 
 int GetNumberOfFramesInBuffer(){
